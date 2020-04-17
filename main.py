@@ -36,7 +36,8 @@ def main():
             'interest_in_russia': '',
         }
 
-        result['country'] = soup.find('a', href="/php/company-profile/IN/main.html").text
+        title = soup.find('div', class_="cp-div-info-left").find('h1', class_="cp-title").text
+        result['country'] = title[title.find('(')+1:title.find(')')]
         result['industry'] = soup.find('div', class_='spec-pad-3').find_next('a').find_next('a').find_next('a').text
         result['name_company'] = soup.find('span', class_='cp-info-2').text.replace('Full name: ', '')
         result['url'] = url
@@ -59,7 +60,7 @@ def main():
         try:
             headquarters = info_item.find('span', class_='ff-grb', string=re.compile('Headquarters')).parent.text.replace('Headquarters', '').replace('  ', '').split('\n')
             town = headquarters[len(headquarters)-2].split(';')[0]
-            while True:
+            for i in range(5):
                 try:
                     location = geolocator.geocode(town)
                     country = str(location).split(', ')
